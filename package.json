@@ -14,8 +14,10 @@
   "dependencies": {
     "@discordjs/builders": "^1.4.0",
     "@discordjs/rest": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
+    "get-urls": "^11.0.0",
     "nodemon": "^2.0.20"
   }
 }
