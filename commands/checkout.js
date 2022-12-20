@@ -26,14 +26,16 @@ const checkOutCommand = new SlashCommandBuilder()
       )
       .addStringOption((option) =>
         option
-          .setName('region')
-          .setDescription('input a province')
+          .setName('item')
+          .setDescription('enter item to check out')
           .setRequired(true)
       )
       .addStringOption((option) =>
         option
-          .setName('item')
-          .setDescription('enter item to check out')
+          .setName('region')
+          .setDescription('enter the province code')
+          .setMaxLength(2)
+          .setMinLength(2)
           .setRequired(true)
       )
   )
@@ -48,12 +50,12 @@ const checkOutJSON = checkOutCommand.toJSON();
 const handler = async (interaction) => {
   if (!interaction.isChatInputCommand) return;
   const site = interaction.options.data[0].options[0].value;
-  const region = interaction.options.data[0].options[1].value;
-  const item = interaction.options.data[0].options[2].value;
+  const item = interaction.options.data[0].options[1].value;
+  const region = interaction.options.data[0].options[2].value;
   const scraper = require(`../scrapers/${site}.js`);
 
-  const scrapedData = await scraper(item, region).catch(() => {
-    interaction.reply({ content: 'No Item Found', ephemeral: true });
+  const scrapedData = await scraper(item, region).catch((err) => {
+    interaction.reply({ content: `${err}`, ephemeral: true });
     return null;
   });
 
