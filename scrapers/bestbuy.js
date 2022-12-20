@@ -1,7 +1,7 @@
 const fetchURL = require('../helpers/fetchURL');
 
-const bestBuyScrape = async (item) => {
-  const productInfoApi = `https://www.bestbuy.ca/api/v2/json/search?&currentRegion=BC&include=facets%2C%20redirects&lang=en-CA&page=1&pageSize=24&path=&query=${item}&exp=search_abtesting_5050_conversion%3Ab&sortBy=relevance&sortDir=desc`;
+const bestBuyScrape = async (item, region) => {
+  const productInfoApi = `https://www.bestbuy.ca/api/v2/json/search?&currentRegion=${region}&include=facets%2C%20redirects&lang=en-CA&page=1&pageSize=24&path=&query=${item}&exp=search_abtesting_5050_conversion%3Ab&sortBy=relevance&sortDir=desc`;
   const productInfojson = await fetchURL(productInfoApi).catch(() => {
     throw Error('Item not found');
   });
