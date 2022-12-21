@@ -1,15 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 
-const embed = (
-  name,
-  url,
-  siteName,
-  price,
-  thumbnailImage,
-  image,
-  inStore,
-  online
-) => {
+const embed = (name, url, siteName, price, thumbnailImage, inStore, online) => {
   return new EmbedBuilder()
     .setColor(0xeaddca)
     .setTitle(name)
@@ -26,9 +17,12 @@ const embed = (
         value: inStore,
         inline: true,
       },
-      { name: 'Purchase Online', value: online, inline: true }
+      {
+        name: 'Purchase Online',
+        value: online,
+        inline: true,
+      }
     )
-    .setImage(image)
     .setTimestamp();
 };
 

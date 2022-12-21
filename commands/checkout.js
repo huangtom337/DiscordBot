@@ -1,4 +1,9 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const {
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+} = require('@discordjs/builders');
+const { ButtonStyle } = require('discord.js');
 const embedBuilder = require('../helpers/embedBuilder.js');
 
 const checkOutCommand = new SlashCommandBuilder()
@@ -72,11 +77,16 @@ const handler = async (interaction) => {
       site,
       product.salePrice,
       product.thumbnailImage,
-      product.image,
       product.inStorePurchase,
       product.onlinePurchase
     );
-    await interaction.user.send({ embeds: [embed] });
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`subscribe${product.sku}`)
+        .setLabel('Click to subscribe for notification')
+        .setStyle(ButtonStyle.Primary)
+    );
+    await interaction.user.send({ embeds: [embed], components: [row] });
   });
 };
 

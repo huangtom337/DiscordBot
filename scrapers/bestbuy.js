@@ -2,18 +2,21 @@ const fetchURL = require('../helpers/fetchURL');
 
 const bestBuyScrape = async (item, region) => {
   const productInfoApi = `https://www.bestbuy.ca/api/v2/json/search?&currentRegion=${region}&include=facets%2C%20redirects&lang=en-CA&page=1&pageSize=24&path=&query=${item}&exp=search_abtesting_5050_conversion%3Ab&sortBy=relevance&sortDir=desc`;
-  const productInfojson = await fetchURL(productInfoApi).catch((err) => {
+  const productInfojson = await fetchURL(productInfoApi).catch(() => {
     return null;
   });
 
+  //bad request
   if (!productInfojson) {
     throw Error('Region not found');
   }
 
+  //0 search results
   if (productInfojson.total === 0) {
     throw Error('Item not found');
   }
 
+  //get top 5 results //* maybe can get user to input how many results
   const products = productInfojson.products.slice(0, 5).map((product) => {
     return {
       sku: product.sku,
@@ -21,10 +24,10 @@ const bestBuyScrape = async (item, region) => {
       productUrl: `https://www.bestbuy.ca${product.productUrl}`,
       salePrice: product.salePrice,
       thumbnailImage: product.thumbnailImage,
-      image: product.highResImage,
     };
   });
 
+  //concat strings for api search
   const skus = products.map((product) => product.sku).join('%7C');
 
   //will be in order of the inserted skus, so we can just traverse normally without mapping
@@ -33,6 +36,7 @@ const bestBuyScrape = async (item, region) => {
   //find availability for each item
   const stockInfojson = await fetchURL(stockInfoApi);
   const totalNumOfProducts = stockInfojson.availabilities.length;
+  //add info property to products
   for (let i = 0; i < totalNumOfProducts; i++) {
     const product = stockInfojson.availabilities[i];
 
