@@ -1,10 +1,6 @@
-const {
-  SlashCommandBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-} = require('@discordjs/builders');
-const { ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const embedBuilder = require('../helpers/embedBuilder.js');
+const { primaryButton } = require('../helpers/buttonBuilder.js');
 
 const checkOutCommand = new SlashCommandBuilder()
   .setName('checkout')
@@ -57,6 +53,7 @@ const handler = async (interaction) => {
   const site = interaction.options.data[0].options[0].value;
   const item = interaction.options.data[0].options[1].value;
   const region = interaction.options.data[0].options[2].value;
+  const userId = interaction.user.id;
   const scraper = require(`../scrapers/${site}.js`);
 
   const scrapedData = await scraper(item, region).catch((err) => {
@@ -82,13 +79,14 @@ const handler = async (interaction) => {
     );
 
     //button
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId(`${product.sku}`)
-        .setLabel('Click to subscribe for notification')
-        .setStyle(ButtonStyle.Primary)
+    const subscribeButton = primaryButton(
+      `${product.sku + '/' + userId + '/' + 'subscribe'}`,
+      'Subscribe'
     );
-    await interaction.user.send({ embeds: [embed], components: [row] });
+    await interaction.user.send({
+      embeds: [embed],
+      components: [subscribeButton],
+    });
   });
 };
 

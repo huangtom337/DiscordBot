@@ -15,5 +15,3 @@ client.on('ready', handleReady);
 client.on('interactionCreate', handleChatCommands);
 
 client.on('interactionCreate', handleButtonCommand);
-
-// webscraper
