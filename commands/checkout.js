@@ -80,9 +80,11 @@ const handler = async (interaction) => {
       product.inStorePurchase,
       product.onlinePurchase
     );
+
+    //button
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId(`subscribe${product.sku}`)
+        .setCustomId(`${product.sku}`)
         .setLabel('Click to subscribe for notification')
         .setStyle(ButtonStyle.Primary)
     );
