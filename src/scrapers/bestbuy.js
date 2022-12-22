@@ -56,6 +56,9 @@ const checkInStoreStatus = (itemStatus) => {
     case 'Preorder':
       return 'Item can be preordered online';
 
+    case 'OnlineOnly':
+      return 'Item can only be purchased online';
+
     default:
       return itemStatus;
   }
@@ -74,6 +77,9 @@ const checkOnlineStatus = (itemStatus) => {
 
     case 'InStoreOnly':
       return 'Item can only be purchased in store';
+
+    case 'InStockOnlineOnly':
+      return 'Item is in stock';
 
     default:
       return itemStatus;
