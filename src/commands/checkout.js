@@ -27,16 +27,14 @@ const checkOutCommand = new SlashCommandBuilder()
       )
       .addStringOption((option) =>
         option
-          .setName('item')
-          .setDescription('enter item to check out')
+          .setName('city')
+          .setDescription('enter your city name')
           .setRequired(true)
       )
       .addStringOption((option) =>
         option
-          .setName('region')
-          .setDescription('enter the province code')
-          .setMaxLength(2)
-          .setMinLength(2)
+          .setName('item')
+          .setDescription('enter item to check out')
           .setRequired(true)
       )
   )
@@ -51,12 +49,13 @@ const checkOutJSON = checkOutCommand.toJSON();
 const handler = async (interaction) => {
   if (!interaction.isChatInputCommand) return;
   const site = interaction.options.data[0].options[0].value;
-  const item = interaction.options.data[0].options[1].value;
-  const region = interaction.options.data[0].options[2].value;
-  const userId = interaction.user.id;
-  const scraper = require(`../scrapers/${site}.js`);
+  const city = interaction.options.data[0].options[1].value;
+  const item = interaction.options.data[0].options[2].value;
 
-  const scrapedData = await scraper(item, region).catch((err) => {
+  const userId = interaction.user.id;
+  const bestBuyScraper = require(`../scrapers/${site}.js`);
+
+  const scrapedData = await bestBuyScraper(item, city).catch((err) => {
     interaction.reply({ content: `${err}`, ephemeral: true });
     return null;
   });
