@@ -1,4 +1,8 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const {
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  hideLinkEmbed,
+} = require('@discordjs/builders');
 const embedBuilder = require('../helpers/embedBuilder.js');
 const { primaryButton } = require('../helpers/buttonBuilder.js');
 
@@ -33,6 +37,14 @@ const checkOutCommand = new SlashCommandBuilder()
       )
       .addStringOption((option) =>
         option
+          .setName('province')
+          .setDescription('enter your province code (BC, ON, etc.)')
+          .setMaxLength(2)
+          .setMinLength(2)
+          .setRequired(true)
+      )
+      .addStringOption((option) =>
+        option
           .setName('item')
           .setDescription('enter item to check out')
           .setRequired(true)
@@ -50,12 +62,13 @@ const handler = async (interaction) => {
   if (!interaction.isChatInputCommand) return;
   const site = interaction.options.data[0].options[0].value;
   const city = interaction.options.data[0].options[1].value;
-  const item = interaction.options.data[0].options[2].value;
+  const region = interaction.options.data[0].options[2].value;
+  const item = interaction.options.data[0].options[3].value;
 
   const userId = interaction.user.id;
   const bestBuyScraper = require(`../scrapers/${site}.js`);
 
-  const scrapedData = await bestBuyScraper(item, city).catch((err) => {
+  const scrapedData = await bestBuyScraper(item, city, region).catch((err) => {
     interaction.reply({ content: `${err}`, ephemeral: true });
     return null;
   });
@@ -79,9 +92,20 @@ const handler = async (interaction) => {
 
     //button
     const subscribeButton = primaryButton(
-      `${product.sku + '/' + userId + '/' + 'subscribe'}`,
+      `${
+        city +
+        '/' +
+        region +
+        '/' +
+        product.sku +
+        '/' +
+        userId +
+        '/' +
+        'subscribe'
+      }`,
       'Subscribe'
     );
+
     await interaction.user.send({
       embeds: [embed],
       components: [subscribeButton],

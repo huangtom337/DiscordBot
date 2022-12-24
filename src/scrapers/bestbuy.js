@@ -1,43 +1,23 @@
 const fetchURL = require('../helpers/fetchURL');
 
-const bestBuyScraper = async (item, city) => {
+const bestBuyScraper = async (item, city, region) => {
   // location based
   // find postal code of city
-  const postalCodeCityApi = `https://www.bestbuy.ca/api/v3/json/locations/locate?includeStores=false&lang=en-CA&city=${city}`;
-  const postalCodeCityjson = await fetchURL(postalCodeCityApi).catch(
-    () => null
-  );
+  const locationIDsApi = `https://www.bestbuy.ca/api/v3/json/locations/locate?includeStores=true&lang=en-CA&region=${region}&city=${city}`;
+  const locationIDsjson = await fetchURL(locationIDsApi).catch(() => null);
 
-  if (!postalCodeCityjson) throw Error('City not found');
+  if (!locationIDsjson) throw Error('Please enter a valid location');
 
-  let postalCode = postalCodeCityjson.postalCode;
+  if (locationIDsjson.nearbyStores.length === 0)
+    throw Error('No stores near your location');
 
-  // if postalCode from city api is null, check using the region api
-  if (!postalCode) {
-    const region = postalCodeCityjson.region;
-    const postalCodeRegionApi = `https://www.bestbuy.ca/api/v3/json/locations/locate?includeStores=false&lang=en-CA&region=${region}`;
-    const postalCodeRegionjson = await fetchURL(postalCodeRegionApi).catch(
-      () => null
-    );
-    if (!postalCodeRegionjson.postalCode)
-      throw Error('No bestbuys in your area');
-    postalCode = postalCodeRegionjson.postalCode;
-  }
-
-  // find locationIDs for the postalcode
-  postalCode = postalCode.split(' ').join(''); //remove potential white spaces
-  const locationIDApi = `https://www.bestbuy.ca/api/v3/json/locations?lang=en-CA&postalCode=${postalCode}`;
-  const locationIDjson = await fetchURL(locationIDApi).catch(() => null);
-
-  //should be redundent
-  if (!locationIDjson) throw Error('Postal code not found');
-
-  const locations = locationIDjson.locations;
+  const locations = locationIDsjson.nearbyStores;
   let locationIDs = [];
   locations.forEach(
     (location) => (locationIDs = [...locationIDs, location.locationId])
   );
 
+  // string concat to match bestbuy api style
   locationIDs = locationIDs.join('%7C');
 
   // query item
@@ -63,8 +43,8 @@ const bestBuyScraper = async (item, city) => {
   //concat strings for api search
   const skus = products.map((product) => product.sku).join('%7C');
 
-  //will be in order of the inserted skus, so we can just traverse normally without mapping
-  const stockInfoApi = `https://www.bestbuy.ca/ecomm-api/availability/products?accept=application%2Fvnd.bestbuy.simpleproduct.v1%2Bjson&accept-language=en-CA&locations=${locationIDs}&postalCode=${postalCode}&skus=${skus}`;
+  //will be in order of the inserted skus, so we can just traverse normally without mapping. standardproduct(shows which locations has inventory)
+  const stockInfoApi = `https://www.bestbuy.ca/ecomm-api/availability/products?accept=application%2Fvnd.bestbuy.simpleproduct.v1%2Bjson&accept-language=en-CA&locations=${locationIDs}&postalCode=&skus=${skus}`;
 
   //find availability for each item
   const stockInfojson = await fetchURL(stockInfoApi);
@@ -75,8 +55,8 @@ const bestBuyScraper = async (item, city) => {
 
     products[i].inStorePurchase = checkInStoreStatus(product.pickup.status);
     products[i].onlinePurchase = checkOnlineStatus(product.shipping.status);
+    products[i].locationIDs = locationIDs;
   }
-
   return products;
 };
 

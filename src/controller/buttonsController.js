@@ -14,11 +14,12 @@ const subscribe = async (interaction) => {
   const channel = interaction.message.channelId;
   const embed = JSON.parse(JSON.stringify(interaction.message.embeds));
   const customId = interaction.customId;
-  const productId = customId.split('/').slice(0, 2).join('/');
+  const location = customId.split('/').slice(0, 2).join('/');
+  const productId = customId.split('/').slice(2, 4).join('/');
   const createdAt = serverTimestamp();
   const userId = interaction.user.id;
 
-  let user = { userId, productId, channel, embed, createdAt };
+  let user = { location, userId, productId, channel, embed, createdAt };
   const response = await addToDatabase(user);
 
   if (!response) {
