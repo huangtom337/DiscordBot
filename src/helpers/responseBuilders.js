@@ -1,7 +1,7 @@
 const embedBuilder = require('./embedBuilder.js');
 const { primaryButton } = require('./buttonBuilder.js');
 
-const scraperResponseBuilder = async (scrapedData, interaction) => {
+const ecommerceScraperResponseBuilder = async (scrapedData, interaction) => {
   let responses = [];
 
   const userId = interaction.user.id;
@@ -19,7 +19,9 @@ const scraperResponseBuilder = async (scrapedData, interaction) => {
     );
 
     //button
+
     const subscribeButton = primaryButton(
+      //city and region obtained from parent class
       `${
         city +
         '/' +
@@ -28,6 +30,8 @@ const scraperResponseBuilder = async (scrapedData, interaction) => {
         product.sku +
         '/' +
         userId +
+        '/' +
+        'ecommerce' +
         '/' +
         'subscribe'
       }`,
@@ -44,13 +48,13 @@ const scraperResponseBuilder = async (scrapedData, interaction) => {
   return responses;
 };
 
-const queryResponseBuilder = async (subscriptions, interaction) => {
+const ecommerceShowAllBuilder = async (subscriptions, interaction) => {
   if (subscriptions.docs.length === 0) {
     interaction.reply({
       content: 'You have no subscriptions',
       ephemeral: true,
     });
-    return;
+    return null;
   }
 
   await interaction.reply({
@@ -63,7 +67,7 @@ const queryResponseBuilder = async (subscriptions, interaction) => {
   subscriptions.forEach((doc) => {
     //button
     const unSubscribeButton = primaryButton(
-      `${doc.data().productId + '/' + 'unsubscribe'}`,
+      `${doc.data().productId + '/' + 'ecommerce' + '/' + 'unsubscribe'}`,
       'Delete'
     );
     response = {
@@ -76,4 +80,4 @@ const queryResponseBuilder = async (subscriptions, interaction) => {
   return responses;
 };
 
-module.exports = { scraperResponseBuilder, queryResponseBuilder };
+module.exports = { ecommerceScraperResponseBuilder, ecommerceShowAllBuilder };

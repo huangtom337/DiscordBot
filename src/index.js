@@ -1,7 +1,7 @@
 const client = require('./client.js');
 const {
   runAtSpecificTimeOfDay,
-  dailyScrapes,
+  dailyScrapesEcommerce,
 } = require('./scrapers/dailyScrapes.js');
 
 const {
@@ -21,6 +21,6 @@ client.on('interactionCreate', handleButtonCommand);
 
 // periodically scrapes
 
-runAtSpecificTimeOfDay(20, 00, () => {
-  dailyScrapes();
-});
+// runAtSpecificTimeOfDay(20, 00, () => {
+//   dailyScrapesEcommerce();
+// });

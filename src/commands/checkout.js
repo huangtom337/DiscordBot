@@ -41,9 +41,10 @@ const checkOutJSON = checkOutCommand.toJSON();
 const handler = async (interaction, client) => {
   if (!interaction.isChatInputCommand) return;
 
-  const subCommandHandler = require(`./subCommands/${interaction.options._subcommand}`);
+  const subCommandHandler = require(`./checkoutSubCommands/checkout_${interaction.options._subcommand}`);
   const responses = await subCommandHandler(interaction, client);
 
+  if (!responses) return;
   // sends responses
   responses.forEach(async (response) => await interaction.user.send(response));
 };

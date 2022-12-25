@@ -1,11 +1,12 @@
 const { getAllSubscriptions } = require('../helpers/dataBaseQueries.js');
 
-// TODO: implement query for all items in database
-const dailyScrapes = async () => {
+// TODO: implement query for all items in database and notifiy user
+const dailyScrapesEcommerce = async () => {
   const docsSnap = await getAllSubscriptions();
-  docsSnap.forEach((doc) => {
-    console.log(doc.data());
-  });
+  // const userSubscriptions = new Collection(); // {id: {skus, locationIds}}
+  // const products = new Collection(); // {sku: {pickUpStatus, onlineStatus}}
+
+  // docsSnap.forEach((doc) => {});
 };
 
 const runAtSpecificTimeOfDay = (hour, minutes, func) => {
@@ -35,4 +36,4 @@ const runAtSpecificTimeOfDay = (hour, minutes, func) => {
   }, 1000);
 };
 
-module.exports = { runAtSpecificTimeOfDay, dailyScrapes };
+module.exports = { runAtSpecificTimeOfDay, dailyScrapesEcommerce };

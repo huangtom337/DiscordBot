@@ -8,13 +8,12 @@ const {
   doc,
   orderBy,
 } = require('firebase/firestore');
-const { primaryButton } = require('../helpers/buttonBuilder.js');
 const db = require('../firebase.js');
 
 // returns query on sueccesful add, else null
-const addToDatabase = async (user) => {
+const addToDatabase = async (user, collectionName) => {
   //query firebase to check for duplicates
-  const usersRef = collection(db, 'users');
+  const usersRef = collection(db, collectionName);
   const q = query(usersRef, where('productId', '==', `${user.productId}`));
   const querySnapshot = await getDocs(q);
 
@@ -27,22 +26,22 @@ const addToDatabase = async (user) => {
   return querySnapshot;
 };
 
-const deleteFromDatabase = async (productId) => {
+const deleteFromDatabase = async (productId, collectionName) => {
   //reference to db and query
-  const usersRef = collection(db, 'users');
+  const usersRef = collection(db, collectionName);
   const q = query(usersRef, where('productId', '==', `${productId}`)); //will be user specific because productId contains userId
   const querySnapshot = await getDocs(q);
 
   if (querySnapshot.docs.length === 0) return null;
   const docId = querySnapshot.docs[0].id;
-  const docRef = doc(db, 'users', docId);
+  const docRef = doc(db, collectionName, docId);
   await deleteDoc(docRef);
   return querySnapshot;
 };
 
 //get all subscriptions that a user has
-const getAllUserSubscriptions = async (interaction) => {
-  const usersRef = collection(db, 'users');
+const getAllUserSubscriptions = async (interaction, collectionName) => {
+  const usersRef = collection(db, collectionName);
   const userId = interaction.user.id;
 
   const q = query(
@@ -56,8 +55,8 @@ const getAllUserSubscriptions = async (interaction) => {
 };
 
 // returns a snapshop to all documents in a collection
-const getAllSubscriptions = async () => {
-  const usersRef = collection(db, 'users');
+const getAllSubscriptions = async (collectionName) => {
+  const usersRef = collection(db, collectionName);
 
   return await getDocs(usersRef);
 };

@@ -1,5 +1,7 @@
 const locationInput = require('../../controller/chatInputController.js');
-const { scraperResponseBuilder } = require('../../helpers/responseBuilders.js');
+const {
+  ecommerceScraperResponseBuilder,
+} = require('../../helpers/responseBuilders.js');
 
 const ecommerceHandler = async (interaction, client) => {
   [region, city] = await locationInput(interaction, client);
@@ -16,12 +18,12 @@ const ecommerceHandler = async (interaction, client) => {
   });
 
   if (!scrapedData) {
-    return;
+    return null;
   } else {
     await interaction.followUp({ content: 'Item Found', ephemeral: true });
   }
 
-  return scraperResponseBuilder(scrapedData, interaction);
+  return ecommerceScraperResponseBuilder(scrapedData, interaction);
 };
 
 module.exports = ecommerceHandler;
