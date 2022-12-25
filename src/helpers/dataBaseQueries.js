@@ -41,7 +41,7 @@ const deleteFromDatabase = async (productId) => {
 };
 
 //get all subscriptions that a user has
-const getAllSubscriptions = async (interaction) => {
+const getAllUserSubscriptions = async (interaction) => {
   const usersRef = collection(db, 'users');
   const userId = interaction.user.id;
 
@@ -54,4 +54,16 @@ const getAllSubscriptions = async (interaction) => {
 
   return subscriptions;
 };
-module.exports = { addToDatabase, deleteFromDatabase, getAllSubscriptions };
+
+// returns a snapshop to all documents in a collection
+const getAllSubscriptions = async () => {
+  const usersRef = collection(db, 'users');
+
+  return await getDocs(usersRef);
+};
+module.exports = {
+  addToDatabase,
+  deleteFromDatabase,
+  getAllUserSubscriptions,
+  getAllSubscriptions,
+};

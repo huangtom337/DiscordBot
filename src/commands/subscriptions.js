@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { queryResponseBuilder } = require('../helpers/responseBuilders.js');
-const { getAllSubscriptions } = require('../helpers/dataBaseQueries.js');
+const { getAllUserSubscriptions } = require('../helpers/dataBaseQueries.js');
 
 const subscriptionsCommand = new SlashCommandBuilder()
   .setName('subscriptions')
@@ -19,7 +19,7 @@ const subscriptionsCommand = new SlashCommandBuilder()
 const subscriptionsJSON = subscriptionsCommand.toJSON();
 
 const handler = async (interaction) => {
-  const subscriptions = await getAllSubscriptions(interaction);
+  const subscriptions = await getAllUserSubscriptions(interaction);
   const responses = await queryResponseBuilder(subscriptions, interaction);
 
   responses.forEach(async (response) => await interaction.user.send(response));

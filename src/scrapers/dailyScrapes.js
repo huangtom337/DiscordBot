@@ -1,16 +1,11 @@
-const {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-} = require('firebase/firestore');
-const db = require('../firebase.js');
+const { getAllSubscriptions } = require('../helpers/dataBaseQueries.js');
 
 // TODO: implement query for all items in database
-const dailyScrapes = () => {
-  // fetch all items in database
-  // for each item, query status, map with userId
+const dailyScrapes = async () => {
+  const docsSnap = await getAllSubscriptions();
+  docsSnap.forEach((doc) => {
+    console.log(doc.data());
+  });
 };
 
 const runAtSpecificTimeOfDay = (hour, minutes, func) => {
@@ -37,7 +32,7 @@ const runAtSpecificTimeOfDay = (hour, minutes, func) => {
     func();
     // run every 24 hours from now on
     setInterval(func, twentyFourHours);
-  }, eta_ms);
+  }, 1000);
 };
 
 module.exports = { runAtSpecificTimeOfDay, dailyScrapes };
