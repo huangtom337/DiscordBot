@@ -1,6 +1,6 @@
 const fetchURL = require('../helpers/fetchURL');
 
-const bestBuyScraper = async (item, city, region) => {
+const bestBuyScraper = async ({ item, city, region }) => {
   // location based
   // find postal code of city
   const locationIDsApi = `https://www.bestbuy.ca/api/v3/json/locations/locate?includeStores=true&lang=en-CA&region=${region}&city=${city}`;

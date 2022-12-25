@@ -13,7 +13,7 @@ const handleChatCommands = async (interaction) => {
     console.log('command not found');
     return;
   }
-  await command.handler(interaction);
+  await command.handler(interaction, client);
 };
 
 const handleButtonCommand = async (interaction) => {

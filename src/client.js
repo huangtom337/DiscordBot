@@ -11,6 +11,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.MessageContent,
   ],
 });
 
@@ -23,7 +24,9 @@ const commandsArray = []; //for registering slash commands
 //fetch commands
 (function () {
   const commandsPath = path.join(__dirname, 'commands');
-  const commandFiles = fs.readdirSync(commandsPath);
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter((file) => file.endsWith('.js'));
 
   for (let file of commandFiles) {
     const filePath = path.join(commandsPath, file);

@@ -1,7 +1,15 @@
 const { EmbedBuilder } = require('discord.js');
 
-const embed = (name, url, siteName, price, thumbnailImage, inStore, online) => {
-  return new EmbedBuilder()
+const embedBuilder = (
+  name,
+  url,
+  siteName,
+  price = 0,
+  thumbnailImage = '',
+  inStore = '',
+  online = ''
+) => {
+  const embed = new EmbedBuilder()
     .setColor(0xeaddca)
     .setTitle(name)
     .setURL(url)
@@ -9,9 +17,18 @@ const embed = (name, url, siteName, price, thumbnailImage, inStore, online) => {
       name: `${siteName}`,
       iconURL: 'https://i.imgur.com/AfFp7pu.png',
     })
-    .setDescription(`This item is listed at $${price}`)
-    .setThumbnail(thumbnailImage)
-    .addFields(
+    .setTimestamp();
+
+  if (price) {
+    embed.setDescription(`This item is listed at $${price}`);
+  }
+
+  if (thumbnailImage) {
+    embed.setThumbnail(thumbnailImage);
+  }
+
+  if (inStore && online) {
+    embed.addFields(
       {
         name: 'Purchase In Store',
         value: inStore,
@@ -22,8 +39,10 @@ const embed = (name, url, siteName, price, thumbnailImage, inStore, online) => {
         value: online,
         inline: true,
       }
-    )
-    .setTimestamp();
+    );
+  }
+
+  return embed;
 };
 
-module.exports = embed;
+module.exports = embedBuilder;

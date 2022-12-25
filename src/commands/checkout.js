@@ -1,10 +1,4 @@
-const {
-  SlashCommandBuilder,
-  ActionRowBuilder,
-  hideLinkEmbed,
-} = require('@discordjs/builders');
-const embedBuilder = require('../helpers/embedBuilder.js');
-const { primaryButton } = require('../helpers/buttonBuilder.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const checkOutCommand = new SlashCommandBuilder()
   .setName('checkout')
@@ -31,20 +25,6 @@ const checkOutCommand = new SlashCommandBuilder()
       )
       .addStringOption((option) =>
         option
-          .setName('city')
-          .setDescription('enter your city name')
-          .setRequired(true)
-      )
-      .addStringOption((option) =>
-        option
-          .setName('province')
-          .setDescription('enter your province code (BC, ON, etc.)')
-          .setMaxLength(2)
-          .setMinLength(2)
-          .setRequired(true)
-      )
-      .addStringOption((option) =>
-        option
           .setName('item')
           .setDescription('enter item to check out')
           .setRequired(true)
@@ -58,59 +38,14 @@ const checkOutCommand = new SlashCommandBuilder()
 
 const checkOutJSON = checkOutCommand.toJSON();
 
-const handler = async (interaction) => {
+const handler = async (interaction, client) => {
   if (!interaction.isChatInputCommand) return;
-  const site = interaction.options.data[0].options[0].value;
-  const city = interaction.options.data[0].options[1].value;
-  const region = interaction.options.data[0].options[2].value;
-  const item = interaction.options.data[0].options[3].value;
 
-  const userId = interaction.user.id;
-  const bestBuyScraper = require(`../scrapers/${site}.js`);
+  const subCommandHandler = require(`./subCommands/${interaction.options._subcommand}`);
+  const responses = await subCommandHandler(interaction, client);
 
-  const scrapedData = await bestBuyScraper(item, city, region).catch((err) => {
-    interaction.reply({ content: `${err}`, ephemeral: true });
-    return null;
-  });
-
-  if (!scrapedData) {
-    return;
-  } else {
-    await interaction.reply({ content: 'Item Found', ephemeral: true });
-  }
-
-  scrapedData.forEach(async (product) => {
-    const embed = embedBuilder(
-      product.name,
-      product.productUrl,
-      site,
-      product.salePrice,
-      product.thumbnailImage,
-      product.inStorePurchase,
-      product.onlinePurchase
-    );
-
-    //button
-    const subscribeButton = primaryButton(
-      `${
-        city +
-        '/' +
-        region +
-        '/' +
-        product.sku +
-        '/' +
-        userId +
-        '/' +
-        'subscribe'
-      }`,
-      'Subscribe'
-    );
-
-    await interaction.user.send({
-      embeds: [embed],
-      components: [subscribeButton],
-    });
-  });
+  // sends responses
+  responses.forEach(async (response) => await interaction.user.send(response));
 };
 
 module.exports = {

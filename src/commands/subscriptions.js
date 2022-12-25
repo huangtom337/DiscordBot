@@ -1,13 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { primaryButton } = require('../helpers/buttonBuilder.js');
-const {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-} = require('firebase/firestore');
-const db = require('../firebase.js');
+const { queryResponseBuilder } = require('../helpers/responseBuilders.js');
+const { getAllSubscriptions } = require('../helpers/dataBaseQueries.js');
 
 const subscriptionsCommand = new SlashCommandBuilder()
   .setName('subscriptions')
@@ -26,40 +19,10 @@ const subscriptionsCommand = new SlashCommandBuilder()
 const subscriptionsJSON = subscriptionsCommand.toJSON();
 
 const handler = async (interaction) => {
-  const usersRef = collection(db, 'users');
-  const userId = interaction.user.id;
+  const subscriptions = await getAllSubscriptions(interaction);
+  const responses = await queryResponseBuilder(subscriptions, interaction);
 
-  const q = query(
-    usersRef,
-    where('userId', '==', `${userId}`),
-    orderBy('createdAt')
-  );
-  const subscriptions = await getDocs(q);
-
-  if (subscriptions.docs.length === 0) {
-    interaction.reply({
-      content: 'You have no subscriptions',
-      ephemeral: true,
-    });
-    return;
-  }
-
-  interaction.reply({
-    content: 'Showing all subscriptions...',
-    ephemeral: true,
-  });
-
-  subscriptions.forEach((doc) => {
-    //button
-    const unSubscribeButton = primaryButton(
-      `${doc.data().productId + '/' + 'unsubscribe'}`,
-      'Delete'
-    );
-    interaction.user.send({
-      embeds: doc.data().embed,
-      components: [unSubscribeButton],
-    });
-  });
+  responses.forEach(async (response) => await interaction.user.send(response));
 };
 
 module.exports = {

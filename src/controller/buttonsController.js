@@ -1,14 +1,8 @@
+const { serverTimestamp } = require('firebase/firestore');
 const {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-} = require('firebase/firestore');
-const db = require('../firebase.js');
+  addToDatabase,
+  deleteFromDatabase,
+} = require('../helpers/dataBaseQueries.js');
 
 const subscribe = async (interaction) => {
   const channel = interaction.message.channelId;
@@ -44,36 +38,6 @@ const unSubscribe = async (interaction) => {
   }
 
   await interaction.reply({ content: 'sucessfully unsubscribed' });
-};
-
-// returns query on sueccesful add, else null
-const addToDatabase = async (user) => {
-  //query firebase to check for duplicates
-  const usersRef = collection(db, 'users');
-  const q = query(usersRef, where('productId', '==', `${user.productId}`));
-  const querySnapshot = await getDocs(q);
-
-  // if user already subscribed to this
-  if (querySnapshot.docs.length !== 0) return null;
-
-  // add to database
-  await addDoc(usersRef, user);
-
-  return querySnapshot;
-};
-
-// returns query on sucessful delete, else null
-const deleteFromDatabase = async (productId) => {
-  //reference to db and query
-  const usersRef = collection(db, 'users');
-  const q = query(usersRef, where('productId', '==', `${productId}`)); //will be user specific because productId contains userId
-  const querySnapshot = await getDocs(q);
-
-  if (querySnapshot.docs.length === 0) return null;
-  const docId = querySnapshot.docs[0].id;
-  const docRef = doc(db, 'users', docId);
-  await deleteDoc(docRef);
-  return querySnapshot;
 };
 
 module.exports = { subscribe, unSubscribe };

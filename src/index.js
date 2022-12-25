@@ -1,6 +1,9 @@
 const client = require('./client.js');
+const {
+  runAtSpecificTimeOfDay,
+  dailyScrapes,
+} = require('./scrapers/dailyScrapes.js');
 
-// const cheerio = require('cheerio');
 const {
   handleChatCommands,
   handleReady,
@@ -15,3 +18,9 @@ client.on('ready', handleReady);
 client.on('interactionCreate', handleChatCommands);
 
 client.on('interactionCreate', handleButtonCommand);
+
+// periodically scrapes
+
+runAtSpecificTimeOfDay(20, 00, () => {
+  dailyScrapes();
+});
