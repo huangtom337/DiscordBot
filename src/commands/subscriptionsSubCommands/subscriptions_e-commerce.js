@@ -1,6 +1,6 @@
 const {
   ecommerceShowAllBuilder,
-} = require('../../helpers/responseBuilders.js');
+} = require('../../helpers/responseBuilders/ecommerceResponseBuilders.js');
 const { getAllUserSubscriptions } = require('../../helpers/dataBaseQueries.js');
 
 const ecommerceSubscriptions = async (interaction) => {

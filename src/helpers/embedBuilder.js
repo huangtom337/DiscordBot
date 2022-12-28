@@ -1,20 +1,21 @@
 const { EmbedBuilder } = require('discord.js');
 
-const embedBuilder = (
+const embedBuilder = ({
   name,
   url,
   siteName,
   price = 0,
   thumbnailImage = '',
   inStore = '',
-  online = ''
-) => {
+  online = '',
+}) => {
   const embed = new EmbedBuilder()
     .setColor(0xeaddca)
     .setTitle(name)
     .setURL(url)
     .setAuthor({
       name: `${siteName}`,
+      url: `https://www.${siteName}.ca`,
       iconURL: 'https://i.imgur.com/AfFp7pu.png',
     })
     .setTimestamp();

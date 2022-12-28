@@ -21,6 +21,6 @@ client.on('interactionCreate', handleButtonCommand);
 
 // periodically scrapes
 
-// runAtSpecificTimeOfDay(20, 00, () => {
-//   dailyScrapesEcommerce();
-// });
+runAtSpecificTimeOfDay(20, 00, () => {
+  dailyScrapesEcommerce();
+});

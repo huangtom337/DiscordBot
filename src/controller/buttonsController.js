@@ -4,17 +4,40 @@ const {
   deleteFromDatabase,
 } = require('../helpers/dataBaseQueries.js');
 
-const subscribe = async (interaction) => {
+const subscribe = async (interaction, scrapedData) => {
+  if (!scrapedData) throw Error('Clicked subscribe without fetching');
+
   const channel = interaction.message.channelId;
   const embed = JSON.parse(JSON.stringify(interaction.message.embeds));
   const customId = interaction.customId;
-  const location = customId.split('/').slice(0, 2).join('/');
-  const productId = customId.split('/').slice(2, 4).join('/');
-  const collectionName = customId.split('/').slice(4, 5)[0];
-  const createdAt = serverTimestamp();
   const userId = interaction.user.id;
+  const collectionName = customId.split('/').slice(0, 1)[0];
 
-  let user = { location, userId, productId, channel, embed, createdAt };
+  const url = embed[0].url.split('/');
+  const sku = url[url.length - 1];
+  const productId = userId + '/' + sku;
+
+  [scrapedData] = scrapedData.filter((product) => product.sku === sku);
+
+  const canBeNotified = scrapedData.canBeNotified;
+  const locationIDs = scrapedData.locationIDs;
+  const status = {
+    inStore: scrapedData.inStorePurchase,
+    online: scrapedData.onlinePurchase,
+  };
+
+  const createdAt = serverTimestamp();
+
+  let user = {
+    status,
+    canBeNotified,
+    locationIDs,
+    userId,
+    productId,
+    channel,
+    embed,
+    createdAt,
+  };
   const response = await addToDatabase(user, collectionName);
 
   if (!response) {
@@ -26,10 +49,14 @@ const subscribe = async (interaction) => {
 };
 
 const unSubscribe = async (interaction) => {
-  //customId : productSku(manga)/userId/buttontype
-  const customId = interaction.customId;
-  const productId = customId.split('/').slice(0, 2).join('/');
-  const collectionName = customId.split('/').slice(2, 3)[0];
+  const embed = JSON.parse(JSON.stringify(interaction.message.embeds));
+  const customId = interaction.customId; // collectionType/purpose
+  const collectionName = customId.split('/').slice(0, 1)[0];
+
+  const url = embed[0].url.split('/');
+  const sku = url[url.length - 1];
+  const userId = interaction.user.id;
+  const productId = userId + '/' + sku;
 
   const response = await deleteFromDatabase(productId, collectionName);
   if (!response) {

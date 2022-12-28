@@ -41,12 +41,17 @@ const checkOutJSON = checkOutCommand.toJSON();
 const handler = async (interaction, client) => {
   if (!interaction.isChatInputCommand) return;
 
-  const subCommandHandler = require(`./checkoutSubCommands/checkout_${interaction.options._subcommand}`);
+  const {
+    getScrapedResponse,
+    subCommandHandler,
+  } = require(`./checkoutSubCommands/checkout_${interaction.options._subcommand}`);
   const responses = await subCommandHandler(interaction, client);
 
   if (!responses) return;
-  // sends responses
+  // sends responses, embeds that are built
   responses.forEach(async (response) => await interaction.user.send(response));
+
+  return getScrapedResponse();
 };
 
 module.exports = {
