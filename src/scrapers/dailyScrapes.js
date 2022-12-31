@@ -7,8 +7,6 @@ const getMapValue = require('../helpers/getMapValue.js');
 const client = require('../client');
 const dailyEcommerceResponseBuilders = require('../helpers/responseBuilders/dailyEcommerceResponseBuilder.js');
 
-// TODO: implement query for all items in database and notifiy user
-// TODO: find out if its possible to store locationIDs
 const dailyScrapesEcommerce = async () => {
   const docsSnap = await getAllSubscriptions('ecommerce');
   const sites = new Collection(); // {site: [{user: [sku1, sku2]}]}
@@ -85,6 +83,11 @@ const dailyScrapesEcommerce = async () => {
   }
 };
 
+// TODO implemente daily scrapes + database matching for manga
+const dailyScrapesManga = async () => {
+  console.log('imma stop this for now i think i learned enough');
+};
+
 const runAtSpecificTimeOfDay = (hour, minutes, func) => {
   const twentyFourHours = 86400000;
   const now = new Date();
@@ -109,7 +112,11 @@ const runAtSpecificTimeOfDay = (hour, minutes, func) => {
     func();
     // run every 24 hours from now on
     setInterval(func, twentyFourHours);
-  }, 1000);
+  }, eta_ms);
 };
 
-module.exports = { runAtSpecificTimeOfDay, dailyScrapesEcommerce };
+module.exports = {
+  runAtSpecificTimeOfDay,
+  dailyScrapesEcommerce,
+  dailyScrapesManga,
+};

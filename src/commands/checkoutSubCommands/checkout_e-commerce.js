@@ -1,7 +1,7 @@
 const locationInput = require('../../controller/chatInputController.js');
 const {
   ecommerceScraperResponseBuilder,
-} = require('../../helpers/responseBuilders/ecommerceResponseBuilders.js');
+} = require('../../helpers/responseBuilders/ecommerceResponseBuilder.js');
 
 let scrapedResponse;
 

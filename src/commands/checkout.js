@@ -10,7 +10,7 @@ const checkOutCommand = new SlashCommandBuilder()
       .addStringOption((option) =>
         option
           .setName('site')
-          .setDescription('subscribe to bestbuy')
+          .setDescription('site to subscribe too')
           .setRequired(true)
           .setChoices(
             {
@@ -34,6 +34,22 @@ const checkOutCommand = new SlashCommandBuilder()
     subcommand
       .setName('manga')
       .setDescription('Check out a manga update status')
+      .addStringOption((option) =>
+        option
+          .setName('site')
+          .setDescription('site to subscribe to')
+          .setRequired(true)
+          .setChoices({
+            name: 'mangadex',
+            value: 'mangadex',
+          })
+      )
+      .addStringOption((option) =>
+        option
+          .setName('manga')
+          .setDescription('enter item to check out')
+          .setRequired(true)
+      )
   );
 
 const checkOutJSON = checkOutCommand.toJSON();

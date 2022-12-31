@@ -2,7 +2,7 @@ const { serverTimestamp } = require('firebase/firestore');
 const {
   addToDatabase,
   deleteFromDatabase,
-} = require('../helpers/dataBaseQueries.js');
+} = require('../../helpers/dataBaseQueries.js');
 
 const subscribe = async (interaction, scrapedData) => {
   if (!scrapedData) throw Error('Clicked subscribe without fetching');

@@ -1,4 +1,4 @@
-const embedBuilder = require('../embedBuilder.js');
+const embedBuilder = require('../embedBuilders/ecommerceEmbedBuilder');
 const { primaryButton } = require('../buttonBuilder.js');
 
 const ecommerceScraperResponseBuilder = async (scrapedData, interaction) => {

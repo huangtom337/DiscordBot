@@ -1,5 +1,4 @@
 const client = require('../client.js');
-const { subscribe, unSubscribe } = require('./buttonsController');
 
 let scrapedData;
 
@@ -23,13 +22,27 @@ const handleButtonCommand = async (interaction) => {
 
   const customId = interaction.customId.split('/');
   const purpose = customId[customId.length - 1];
+  const type = customId[0];
   if (purpose === 'subscribe') {
+    const { subscribe } = require(`./buttonsController/${type}Buttons`);
     subscribe(interaction, scrapedData).catch((err) => {
       interaction.reply({ content: err + ' please restart' });
       console.log(err);
     });
   } else {
+    const { unSubscribe } = require(`./buttonsController/${type}Buttons`);
     unSubscribe(interaction);
+  }
+};
+
+// TODO: handle checking when user leaves and make bot leave the channel as well
+const handleVoiceCommands = async (oldState, newState) => {
+  if (oldState.member.user.bot) return;
+
+  const channelId = newState.member.voice.channelId;
+
+  if (newState.member.voice.channel) {
+    console.log(oldState.member.voice.channel);
   }
 };
 
@@ -37,4 +50,5 @@ module.exports = {
   handleButtonCommand,
   handleChatCommands,
   handleReady,
+  handleVoiceCommands,
 };

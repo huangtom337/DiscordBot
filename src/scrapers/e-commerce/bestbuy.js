@@ -76,7 +76,7 @@ const bestBuyScraper = async ({ item, location }) => {
   const locationIDs = await getNearByStores(city, region);
 
   let products = await getQueriedProducts(item);
-
+  // return the object with necessary properties {sku, name, url, price, thumbnail, instorestatus, onlinestatus, locationIDs}
   return await getProductStatus(products, locationIDs);
 };
 

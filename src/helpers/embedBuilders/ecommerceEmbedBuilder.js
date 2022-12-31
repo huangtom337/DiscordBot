@@ -20,13 +20,8 @@ const embedBuilder = ({
     })
     .setTimestamp();
 
-  if (price) {
-    embed.setDescription(`This item is listed at $${price}`);
-  }
-
-  if (thumbnailImage) {
-    embed.setThumbnail(thumbnailImage);
-  }
+  if (price) embed.setDescription(`This item is listed at $${price}`);
+  if (thumbnailImage) embed.setThumbnail(thumbnailImage);
 
   if (inStore && online) {
     embed.addFields(
